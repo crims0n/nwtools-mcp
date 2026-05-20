@@ -127,6 +127,15 @@ In Claude Desktop (`claude_desktop_config.json`):
 
 On claude.ai, add the server under **Settings → Integrations** using the same URL.
 
+## Development
+
+Install with the `test` extra and run the suite:
+
+```bash
+pip install -e ".[test]"
+pytest
+```
+
 ## Requirements
 
 - Python 3.11+

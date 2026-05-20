@@ -12,6 +12,11 @@ dependencies = [
     "mcp>=1.0.0",
 ]
 
+[project.optional-dependencies]
+test = [
+    "pytest>=8.0",
+]
+
 [project.scripts]
 nwtools-mcp = "server:mcp.run"
 

@@ -26,16 +26,28 @@ def parse_cidr(cidr: str) -> dict:
     wildcard mask, first usable host, last usable host, and total host count.
     """
     net = _net(cidr)
-    hosts = list(net.hosts())
+
+    if net.prefixlen == 32:
+        first_host = last_host = net.network_address
+        host_count = 1
+    elif net.prefixlen == 31:
+        first_host = net.network_address
+        last_host = net.broadcast_address
+        host_count = 2
+    else:
+        first_host = net.network_address + 1
+        last_host = net.broadcast_address - 1
+        host_count = net.num_addresses - 2
+
     return {
         "network_address": str(net.network_address),
         "broadcast_address": str(net.broadcast_address),
         "prefix_length": net.prefixlen,
         "netmask": str(net.netmask),
         "wildcard_mask": str(net.hostmask),
-        "first_host": str(hosts[0]) if hosts else str(net.network_address),
-        "last_host": str(hosts[-1]) if hosts else str(net.broadcast_address),
-        "host_count": net.num_addresses - 2 if net.prefixlen < 31 else net.num_addresses,
+        "first_host": str(first_host),
+        "last_host": str(last_host),
+        "host_count": host_count,
         "total_addresses": net.num_addresses,
     }
 

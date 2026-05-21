@@ -13,6 +13,7 @@ from mcp.server.fastmcp import FastMCP
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
+from . import __version__
 from .tools import (
     check_coverage,
     cidr_to_range,
@@ -48,7 +49,7 @@ def _version() -> str:
     try:
         return importlib.metadata.version("nwtools-mcp")
     except importlib.metadata.PackageNotFoundError:
-        return "0.1.0"
+        return __version__
 
 
 def log_event(event: str, **fields: Any) -> None:

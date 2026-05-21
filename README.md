@@ -201,6 +201,34 @@ pip install build
 python -m build
 ```
 
+## Release
+
+The project is now structured to publish cleanly to PyPI and run via `uvx`.
+
+Build locally:
+
+```bash
+uv build
+```
+
+Publish manually with a token:
+
+```bash
+uv publish
+```
+
+For GitHub Actions, the repo includes [publish.yml](/Users/patrick/Downloads/nwtools-mcp/.github/workflows/publish.yml) for PyPI Trusted Publishing. Before using it:
+
+1. Create a `pypi` environment in the GitHub repository settings.
+2. Add a Trusted Publisher for this project on PyPI that matches:
+   `Repository owner`: `crims0n`
+   `Repository name`: `nwtools-mcp`
+   `Workflow filename`: `publish.yml`
+   `Environment name`: `pypi`
+3. Push a version tag such as `v0.2.0`.
+
+The publish workflow builds the wheel and sdist, smoke-tests both artifacts, and then runs `uv publish`.
+
 ## Requirements
 
 - Python 3.11+

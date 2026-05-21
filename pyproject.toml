@@ -10,6 +10,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "mcp>=1.0.0",
+    "uvicorn>=0.30",
 ]
 
 [project.optional-dependencies]
@@ -18,7 +19,7 @@ test = [
 ]
 
 [project.scripts]
-nwtools-mcp = "server:mcp.run"
+nwtools-mcp = "main:run"
 
 [tool.hatch.build.targets.wheel]
 packages = ["."]

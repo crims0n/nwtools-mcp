@@ -26,6 +26,7 @@ An MCP server that gives LLMs accurate IPv4 subnet and address tools. LLMs are u
 | `HOST` | `0.0.0.0` | Bind address (HTTP transports only) |
 | `PORT` | `8000` | Listen port (HTTP transports only) |
 | `API_KEY` | _(none)_ | When set, requires `X-API-Key: <value>` on all HTTP requests |
+| `LOG_LEVEL` | `INFO` | Python log level for process and request logging |
 
 ## Local use (stdio)
 
@@ -35,7 +36,13 @@ Install and run directly:
 
 ```bash
 pip install -e .
-python server.py
+python main.py
+```
+
+Or use the console script:
+
+```bash
+nwtools-mcp
 ```
 
 Or via Docker:
@@ -53,7 +60,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
   "mcpServers": {
     "nwtools": {
       "command": "python",
-      "args": ["/path/to/nwtools-mcp/server.py"]
+      "args": ["/path/to/nwtools-mcp/main.py"]
     }
   }
 }
@@ -80,10 +87,10 @@ The server supports `streamable-http` (recommended) and `sse` transports for rem
 
 ```bash
 # Local test
-MCP_TRANSPORT=streamable-http python server.py
+MCP_TRANSPORT=streamable-http python main.py
 
 # With auth
-API_KEY=your-secret MCP_TRANSPORT=streamable-http python server.py
+API_KEY=your-secret MCP_TRANSPORT=streamable-http python main.py
 ```
 
 With Docker:
@@ -95,6 +102,17 @@ docker run --rm -p 8000:8000 \
   -e API_KEY=your-secret \
   nwtools-mcp
 ```
+
+### Operational endpoints
+
+When running in HTTP mode, the container exposes two unauthenticated probe endpoints:
+
+| Endpoint | Description |
+|---|---|
+| `/healthz` | Basic liveness probe |
+| `/readyz` | Readiness probe |
+
+HTTP requests are also logged as structured JSON lines, including method, path, status, duration, client IP, and request ID.
 
 ### TLS and auth
 
@@ -139,4 +157,5 @@ pytest
 ## Requirements
 
 - Python 3.11+
-- [`mcp`](https://github.com/modelcontextprotocol/python-sdk) — all other dependencies (`uvicorn`, `starlette`) are pulled in transitively
+- [`mcp`](https://github.com/modelcontextprotocol/python-sdk)
+- `uvicorn`

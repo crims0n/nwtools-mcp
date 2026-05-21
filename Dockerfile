@@ -3,10 +3,10 @@ FROM python:3.11-slim
 WORKDIR /app
 
 COPY pyproject.toml README.md ./
-COPY server.py .
+COPY app.py main.py server.py tools.py ./
 
 RUN pip install --no-cache-dir .
 
 EXPOSE 8000
 
-CMD ["python", "server.py"]
+CMD ["python", "main.py"]

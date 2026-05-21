@@ -6,7 +6,9 @@ that the network math underlying each tool is correct.
 """
 
 import pytest
+from starlette.testclient import TestClient
 
+from app import create_http_app
 from server import (
     check_coverage,
     cidr_to_range,
@@ -320,3 +322,37 @@ class TestIpConvert:
         assert r["hexadecimal"] == "0x00000000"
         assert r["binary"] == "00000000.00000000.00000000.00000000"
         assert r["integer"] == 0
+
+
+# ---------------------------------------------------------------------------
+# HTTP app
+# ---------------------------------------------------------------------------
+
+class TestHttpApp:
+    def test_healthz_is_public(self):
+        with TestClient(create_http_app("streamable-http", api_key="secret")) as client:
+            response = client.get("/healthz")
+
+            assert response.status_code == 200
+            assert response.json()["status"] == "ok"
+            assert "x-request-id" in response.headers
+
+    def test_readyz_is_public(self):
+        with TestClient(create_http_app("streamable-http", api_key="secret")) as client:
+            response = client.get("/readyz")
+
+            assert response.status_code == 200
+            assert response.json()["status"] == "ready"
+
+    def test_mcp_endpoint_requires_api_key(self):
+        with TestClient(create_http_app("streamable-http", api_key="secret")) as client:
+            response = client.post("/mcp", json={})
+
+            assert response.status_code == 401
+            assert response.json() == {"error": "Unauthorized"}
+
+    def test_mcp_endpoint_allows_api_key(self):
+        with TestClient(create_http_app("streamable-http", api_key="secret")) as client:
+            response = client.post("/mcp", headers={"X-API-Key": "secret"}, json={})
+
+            assert response.status_code != 401

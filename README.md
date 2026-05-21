@@ -2,6 +2,8 @@
 
 An MCP server that gives LLMs accurate IPv4 subnet and address tools. LLMs are unreliable at network math — this server provides deterministic, correct results via Python's `ipaddress` standard library.
 
+PyPI: https://pypi.org/project/nwtools-mcp/
+
 ## Tools
 
 | Tool | Description |
@@ -34,7 +36,7 @@ The stdio transport is used when Claude Desktop spawns the server as a subproces
 
 ### Run from PyPI with uvx
 
-Once published, the simplest way to run the server locally will be:
+The simplest way to run the server locally is:
 
 ```bash
 uvx nwtools-mcp
@@ -88,7 +90,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 }
 ```
 
-Or with Docker:
+Or run it directly from PyPI with `uvx`:
 
 ```json
 {
@@ -211,21 +213,30 @@ Build locally:
 uv build
 ```
 
-Publish manually with a token:
+Publish manually:
 
 ```bash
 uv publish
 ```
 
-For GitHub Actions, the repo includes [publish.yml](/Users/patrick/Downloads/nwtools-mcp/.github/workflows/publish.yml) for PyPI Trusted Publishing. Before using it:
+Automated publishing uses [publish.yml](/Users/patrick/Downloads/nwtools-mcp/.github/workflows/publish.yml) with PyPI Trusted Publishing.
 
-1. Create a `pypi` environment in the GitHub repository settings.
-2. Add a Trusted Publisher for this project on PyPI that matches:
+Release checklist:
+
+1. Update `version` in [pyproject.toml](/Users/patrick/Downloads/nwtools-mcp/pyproject.toml:1) and `__version__` in [src/nwtools_mcp/__init__.py](/Users/patrick/Downloads/nwtools-mcp/src/nwtools_mcp/__init__.py:1).
+2. Run `pytest`.
+3. Run `uv build`.
+4. Commit and push to `main`.
+5. Push a version tag such as `v0.2.0`.
+
+Trusted Publisher settings:
+
+- Create a `pypi` environment in the GitHub repository settings.
+- Add a Trusted Publisher for this project on PyPI that matches:
    `Repository owner`: `crims0n`
    `Repository name`: `nwtools-mcp`
    `Workflow filename`: `publish.yml`
    `Environment name`: `pypi`
-3. Push a version tag such as `v0.2.0`.
 
 The publish workflow builds the wheel and sdist, smoke-tests both artifacts, and then runs `uv publish`.
 

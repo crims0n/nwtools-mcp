@@ -19,7 +19,21 @@ test = [
 ]
 
 [project.scripts]
-nwtools-mcp = "main:run"
+nwtools-mcp = "nwtools_mcp.main:run"
 
 [tool.hatch.build.targets.wheel]
-packages = ["."]
+packages = ["src/nwtools_mcp"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/tests",
+    "/README.md",
+    "/LICENSE",
+    "/Dockerfile",
+    "/pyproject.toml",
+    "/app.py",
+    "/main.py",
+    "/server.py",
+    "/tools.py",
+]

@@ -32,6 +32,21 @@ An MCP server that gives LLMs accurate IPv4 subnet and address tools. LLMs are u
 
 The stdio transport is used when Claude Desktop spawns the server as a subprocess. No network port is opened.
 
+### Run from PyPI with uvx
+
+Once published, the simplest way to run the server locally will be:
+
+```bash
+uvx nwtools-mcp
+```
+
+That runs the `nwtools-mcp` console command from an isolated ephemeral environment. For a persistent install:
+
+```bash
+uv tool install nwtools-mcp
+nwtools-mcp
+```
+
 Install and run directly:
 
 ```bash
@@ -42,6 +57,13 @@ python main.py
 Or use the console script:
 
 ```bash
+nwtools-mcp
+```
+
+Or install from PyPI with pip:
+
+```bash
+pip install nwtools-mcp
 nwtools-mcp
 ```
 
@@ -72,8 +94,20 @@ Or with Docker:
 {
   "mcpServers": {
     "nwtools": {
-      "command": "docker",
-      "args": ["run", "--rm", "-i", "nwtools-mcp"]
+      "command": "uvx",
+      "args": ["nwtools-mcp"]
+    }
+  }
+}
+```
+
+If you prefer a persistent uv-managed install, use:
+
+```json
+{
+  "mcpServers": {
+    "nwtools": {
+      "command": "nwtools-mcp"
     }
   }
 }
@@ -152,6 +186,19 @@ Install with the `test` extra and run the suite:
 ```bash
 pip install -e ".[test]"
 pytest
+```
+
+To build distribution artifacts locally:
+
+```bash
+uv build
+```
+
+Or with the standard Python build frontend:
+
+```bash
+pip install build
+python -m build
 ```
 
 ## Requirements

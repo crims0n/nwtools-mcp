@@ -8,8 +8,8 @@ that the network math underlying each tool is correct.
 import pytest
 from starlette.testclient import TestClient
 
-from app import create_http_app
-from server import (
+from nwtools_mcp.app import create_http_app
+from nwtools_mcp.server import (
     check_coverage,
     cidr_to_range,
     classify_ip,
@@ -22,6 +22,8 @@ from server import (
     subtract_subnet,
     summarize_cidrs,
 )
+
+import server as compatibility_server
 
 
 # ---------------------------------------------------------------------------
@@ -356,3 +358,8 @@ class TestHttpApp:
             response = client.post("/mcp", headers={"X-API-Key": "secret"}, json={})
 
             assert response.status_code != 401
+
+
+class TestCompatibilityImports:
+    def test_legacy_server_shim_still_exports_tools(self):
+        assert compatibility_server.parse_cidr("10.0.0.0/24")["host_count"] == 254
